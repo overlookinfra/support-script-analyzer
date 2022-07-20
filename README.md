@@ -18,3 +18,66 @@ Currently implemented jobs are
 
 json output can be converted to HTML with some basic styling by saving to a file and passing the filename as an argument to `convert.py`.  The required Python libraries can be installed with `pip install -r requirements.txt`.
 
+
+# sar2influxdb
+
+ Tools for importing Puppet metrics into time series databases
+
+
+## Usage: 
+
+`
+sar2influxdb.rb [options] [sadd|sadd.gz] [...]
+`
+
+`
+--pattern PATTERN Glob pattern of files to load.
+`
+* Must be provided if no files are passed.
+
+`--db-host HOSTNAME|IP_ADDRESS`
+
+* Hostname to submit converted data to.
+
+* Leave blank to print converted data to stdout.
+
+`--db-name NAME`
+
+* Database name to submit converted data to.
+
+* Required if --db-host is used.
+
+`-h, --help` 
+
+* Show help
+
+`--debug `
+ 
+ * Enable backtraces from errors.
+
+`--version` 
+ * Show version
+
+##  Limitations
+
+HTTP output not fully plumbed in. Needs to be done in
+batches of ~10,000 lines as there is a limit to how much
+data InfluxDB will accept in a single POST. For now,
+dump stdout to a file, `split -l10000` it, then use curl
+to POST the resulting `x*` files with `--data-binary`.
+
+
+This tool locates the `sadf` executable, which is
+used to extract and format data stored in SAR archives.
+This tool is commonly provided by the `sysstat` package
+and version 11.1.1 or newer is required.
+
+
+You may have to run this script in an environment that has the
+same version of sysstat as the environment that produced the archive.
+Docker containers are a great way to do this.
+
+
+
+
+
